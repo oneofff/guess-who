@@ -4,7 +4,6 @@ import com.alibou.security.controller.game.dto.GameResultDto;
 import com.alibou.security.controller.game.dto.GameResultResponse;
 import com.alibou.security.model.game.Game;
 import com.alibou.security.model.game.GameResult;
-import com.alibou.security.model.user.User;
 import com.alibou.security.model.user.UserStatistics;
 import com.alibou.security.repository.GameRepository;
 import com.alibou.security.repository.GameResultRepository;
