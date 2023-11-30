@@ -2,6 +2,7 @@ package com.alibou.security.controller.game;
 
 import com.alibou.security.auditing.ApplicationAuditAware;
 import com.alibou.security.controller.game.dto.GameResultDto;
+import com.alibou.security.controller.game.dto.GameResultResponse;
 import com.alibou.security.service.GameService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -32,5 +33,11 @@ public class GameController {
         Integer userId = context.getCurrentAuditor().get();
         gameService.connectToGame(id, userId);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("{id}/result")
+    public ResponseEntity<GameResultResponse> getResults(@PathVariable Integer id){
+        Integer userId = context.getCurrentAuditor().get();
+        return ResponseEntity.ok(gameService.getGameResults(id, userId));
     }
 }

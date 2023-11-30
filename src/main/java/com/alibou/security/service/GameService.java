@@ -1,6 +1,7 @@
 package com.alibou.security.service;
 
 import com.alibou.security.controller.game.dto.GameResultDto;
+import com.alibou.security.controller.game.dto.GameResultResponse;
 import com.alibou.security.model.game.Game;
 import com.alibou.security.model.game.GameResult;
 import com.alibou.security.repository.GameRepository;
@@ -16,7 +17,7 @@ public class GameService {
     private final GameResultRepository gameResultRepository;
     private final UserRepository userRepository;
 
-    public Integer createGame(Integer userId){
+    public Integer createGame(Integer userId) {
         Game newGame = Game.builder()
                 .user1(userRepository.getReferenceById(userId))
                 .build();
@@ -36,5 +37,23 @@ public class GameService {
         Game game = gameRepository.findById(gameId).get();
         game.setUser2(userRepository.getReferenceById(userId));
         gameRepository.save(game);
+    }
+
+    public GameResultResponse getGameResults(Integer gameId, Integer userId) {
+        Game game = gameRepository.findById(gameId).get();
+        GameResult gameResult = gameResultRepository.findByGameId(game);
+
+        boolean isCreator = game.getUser1().getId().equals(userId);
+        String opponentName = isCreator ?
+                userRepository.findById(game.getUser2().getId()).get().getUsername() :
+                userRepository.findById(game.getUser1().getId()).get().getUsername();
+
+        boolean isWinner = gameResult.getWinner().getId().equals(userId);
+
+        return GameResultResponse.builder()
+                .opponentName(opponentName)
+                .movesToEnd(gameResult.getMovesToEnd())
+                .result(isWinner ? "WIN" : "LOSE")
+                .build();
     }
 }
