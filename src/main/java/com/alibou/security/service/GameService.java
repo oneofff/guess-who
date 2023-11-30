@@ -2,13 +2,12 @@ package com.alibou.security.service;
 
 import com.alibou.security.controller.game.dto.GameResultDto;
 import com.alibou.security.controller.game.dto.GameResultResponse;
+import com.alibou.security.controller.game.dto.UserChooseDto;
 import com.alibou.security.model.game.Game;
 import com.alibou.security.model.game.GameResult;
+import com.alibou.security.model.game.UserChoose;
 import com.alibou.security.model.user.UserStatistics;
-import com.alibou.security.repository.GameRepository;
-import com.alibou.security.repository.GameResultRepository;
-import com.alibou.security.repository.UserRepository;
-import com.alibou.security.repository.UserStatisticsRepository;
+import com.alibou.security.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,6 +22,7 @@ public class GameService {
     private final GameResultRepository gameResultRepository;
     private final UserRepository userRepository;
     private final UserStatisticsRepository userStatisticsRepository;
+    private final UserChooseRepository userChooseRepository;
 
     public Integer createGame(Integer userId) {
         Game newGame = Game.builder()
@@ -93,5 +93,22 @@ public class GameService {
             responseList.add(response);
         }
         return responseList;
+    }
+
+    public String choose(UserChooseDto userChooseDto, Integer gameId, Integer userId) {
+        UserChoose userChoose = UserChoose.builder()
+                .user(userRepository.getReferenceById(userId))
+                .hairType(UserChoose.HairType.valueOf(userChooseDto.getHairType()))
+                .hairColor(UserChoose.HairColor.valueOf(userChooseDto.getHairColor()))
+                .skinColor(UserChoose.SkinColor.valueOf(userChooseDto.getSkinColor()))
+                .gender(UserChoose.Gender.valueOf(userChooseDto.getGender()))
+                .isWearingHat(userChooseDto.isWearingHat())
+                .hairLength(userChooseDto.getHairLength())
+                .age(userChooseDto.getAge())
+                .happiness(userChooseDto.getHappiness())
+                .game(gameRepository.getReferenceById(gameId))
+                .build();
+
+        return userChooseRepository.save(userChoose).getId().toString();
     }
 }
