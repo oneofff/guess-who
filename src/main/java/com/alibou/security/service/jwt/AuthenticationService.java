@@ -44,7 +44,7 @@ public class AuthenticationService {
         .build();
     var savedUser = repository.save(user);
     UserStatistics userStatistics = UserStatistics.builder()
-            .losesCount(0)
+            .total(0)
             .winsCount(0)
             .user(savedUser)
             .build();

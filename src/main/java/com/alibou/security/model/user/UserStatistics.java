@@ -19,8 +19,8 @@ public class UserStatistics {
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
+    private Integer total;
     private Integer winsCount;
-    private Integer losesCount;
 
     @Override
     public boolean equals(Object o) {

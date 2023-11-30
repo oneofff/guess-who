@@ -2,13 +2,8 @@ package com.alibou.security.model.user;
 
 import com.alibou.security.model.token.Token;
 import com.alibou.security.model.user.Role;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -27,6 +22,7 @@ public class User implements UserDetails {
   @Id
   @GeneratedValue
   private Integer id;
+  @Column(unique = true)
   private String username;
   private String password;
 
