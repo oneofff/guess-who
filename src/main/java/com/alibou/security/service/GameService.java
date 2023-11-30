@@ -10,6 +10,9 @@ import com.alibou.security.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class GameService {
@@ -41,6 +44,10 @@ public class GameService {
 
     public GameResultResponse getGameResults(Integer gameId, Integer userId) {
         Game game = gameRepository.findById(gameId).get();
+        return getGameResultResponse(userId, game);
+    }
+
+    private GameResultResponse getGameResultResponse(Integer userId, Game game) {
         GameResult gameResult = gameResultRepository.findByGameId(game);
 
         boolean isCreator = game.getUser1().getId().equals(userId);
@@ -55,5 +62,15 @@ public class GameService {
                 .movesToEnd(gameResult.getMovesToEnd())
                 .result(isWinner ? "WIN" : "LOSE")
                 .build();
+    }
+
+    public List<GameResultResponse> getListOfUserGames(Integer userId) {
+        List<Game> allUserGames = gameRepository.findAllByUser1IdOrUser2Id(userId, userId);
+        List<GameResultResponse> responseList = new LinkedList<>();
+        for (var game : allUserGames) {
+            GameResultResponse response = getGameResultResponse(userId, game);
+            responseList.add(response);
+        }
+        return responseList;
     }
 }

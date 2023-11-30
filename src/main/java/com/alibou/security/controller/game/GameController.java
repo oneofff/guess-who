@@ -9,6 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/games")
 @RequiredArgsConstructor
@@ -20,7 +23,9 @@ public class GameController {
     @PostMapping()
     public ResponseEntity<Integer> createGame() {
         Integer userId = context.getCurrentAuditor().get();
-        return ResponseEntity.ok(gameService.createGame(userId));
+        return ResponseEntity
+                .created(URI.create(gameService.createGame(userId).toString()))
+                .build();
     }
 
     @PostMapping("/results")
@@ -35,9 +40,15 @@ public class GameController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("{id}/result")
-    public ResponseEntity<GameResultResponse> getResults(@PathVariable Integer id){
+    @GetMapping("{id}/results")
+    public ResponseEntity<GameResultResponse> getResultOfGame(@PathVariable Integer id){
         Integer userId = context.getCurrentAuditor().get();
         return ResponseEntity.ok(gameService.getGameResults(id, userId));
+    }
+
+    @GetMapping("/results")
+    public ResponseEntity<List<GameResultResponse>> getResultsOfUser(){
+        Integer userId = context.getCurrentAuditor().get();
+        return ResponseEntity.ok(gameService.getListOfUserGames(userId));
     }
 }

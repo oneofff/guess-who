@@ -19,11 +19,11 @@ public class Game {
     @GeneratedValue
     private Integer id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id1")
     private User user1;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id2")
     private User user2;
 }

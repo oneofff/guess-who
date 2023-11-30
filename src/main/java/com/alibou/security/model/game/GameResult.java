@@ -21,7 +21,7 @@ public class GameResult {
     @JoinColumn(name = "game_id")
     private Game gameId;
 
-    @OneToOne
+    @ManyToOne
     private User winner;
 
     @Column(name = "moves")
