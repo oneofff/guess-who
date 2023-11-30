@@ -24,16 +24,16 @@ public class SecurityApplication {
 			AuthenticationService service
 	) {
 		return args -> {
-			var admin = RegisterRequest.builder()
-					.username("admin")
-					.password("admin")
-					.build();
-			var user = RegisterRequest.builder()
-					.username("user")
-					.password("user")
-					.build();
-			System.out.println("Admin token: " + service.register(admin).getAccessToken());
-			System.out.println("User token: " + service.register(user).getAccessToken());
+//			var admin = RegisterRequest.builder()
+//					.username("admin")
+//					.password("admin")
+//					.build();
+//			var user = RegisterRequest.builder()
+//					.username("user")
+//					.password("user")
+//					.build();
+//			System.out.println("Admin token: " + service.register(admin).getAccessToken());
+//			System.out.println("User token: " + service.register(user).getAccessToken());
 
 		};
 	}

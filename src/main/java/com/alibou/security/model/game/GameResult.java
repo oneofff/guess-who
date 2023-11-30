@@ -18,8 +18,11 @@ public class GameResult {
     private Integer id;
 
     @OneToOne
-    @JoinColumn(name = "user_id1")
-    private User result;
+    @JoinColumn(name = "game_id")
+    private Game gameId;
+
+    @OneToOne
+    private User winner;
 
     @Column(name = "moves")
     private int movesToEnd;
