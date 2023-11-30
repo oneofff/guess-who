@@ -5,14 +5,17 @@ import com.alibou.security.controller.auth.dto.AuthenticationResponse;
 import com.alibou.security.controller.auth.dto.RegisterRequest;
 import com.alibou.security.model.token.Token;
 import com.alibou.security.model.user.Role;
+import com.alibou.security.model.user.UserStatistics;
 import com.alibou.security.repository.TokenRepository;
 import com.alibou.security.model.token.TokenType;
 import com.alibou.security.model.user.User;
 import com.alibou.security.repository.UserRepository;
+import com.alibou.security.repository.UserStatisticsRepository;
 import com.alibou.security.service.jwt.JwtService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,7 +33,9 @@ public class AuthenticationService {
   private final PasswordEncoder passwordEncoder;
   private final JwtService jwtService;
   private final AuthenticationManager authenticationManager;
+  private final UserStatisticsRepository userStatisticsRepository;
 
+  @Transactional
   public AuthenticationResponse register(RegisterRequest request) {
     var user = User.builder()
         .username(request.getUsername())
@@ -38,6 +43,12 @@ public class AuthenticationService {
         .role(Role.USER)
         .build();
     var savedUser = repository.save(user);
+    UserStatistics userStatistics = UserStatistics.builder()
+            .losesCount(0)
+            .winsCount(0)
+            .user(savedUser)
+            .build();
+    userStatisticsRepository.save(userStatistics);
     var jwtToken = jwtService.generateToken(user);
     var refreshToken = jwtService.generateRefreshToken(user);
     saveUserToken(savedUser, jwtToken);
