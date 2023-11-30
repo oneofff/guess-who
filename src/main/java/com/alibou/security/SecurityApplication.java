@@ -27,12 +27,10 @@ public class SecurityApplication {
 			var admin = RegisterRequest.builder()
 					.username("admin")
 					.password("admin")
-					.role(ADMIN)
 					.build();
 			var user = RegisterRequest.builder()
 					.username("user")
 					.password("user")
-					.role(USER)
 					.build();
 			System.out.println("Admin token: " + service.register(admin).getAccessToken());
 			System.out.println("User token: " + service.register(user).getAccessToken());

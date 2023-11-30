@@ -4,6 +4,7 @@ import com.alibou.security.controller.auth.dto.AuthenticationRequest;
 import com.alibou.security.controller.auth.dto.AuthenticationResponse;
 import com.alibou.security.controller.auth.dto.RegisterRequest;
 import com.alibou.security.model.token.Token;
+import com.alibou.security.model.user.Role;
 import com.alibou.security.repository.TokenRepository;
 import com.alibou.security.model.token.TokenType;
 import com.alibou.security.model.user.User;
@@ -34,7 +35,7 @@ public class AuthenticationService {
     var user = User.builder()
         .username(request.getUsername())
         .password(passwordEncoder.encode(request.getPassword()))
-        .role(request.getRole())
+        .role(Role.USER)
         .build();
     var savedUser = repository.save(user);
     var jwtToken = jwtService.generateToken(user);
