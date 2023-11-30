@@ -1,6 +1,6 @@
 package com.alibou.security.auditing;
 
-import com.alibou.security.user.User;
+import com.alibou.security.model.user.User;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
