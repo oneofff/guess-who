@@ -1,6 +1,6 @@
 package com.alibou.security.controller.game;
 
-import com.alibou.security.auditing.ApplicationAuditAware;
+import com.alibou.security.config.auditing.ApplicationAuditAware;
 import com.alibou.security.controller.game.dto.GameResultDto;
 import com.alibou.security.controller.game.dto.GameResultResponse;
 import com.alibou.security.controller.game.dto.UserChooseDto;

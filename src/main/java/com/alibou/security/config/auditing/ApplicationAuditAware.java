@@ -1,4 +1,4 @@
-package com.alibou.security.auditing;
+package com.alibou.security.config.auditing;
 
 import com.alibou.security.model.user.User;
 import org.springframework.data.domain.AuditorAware;

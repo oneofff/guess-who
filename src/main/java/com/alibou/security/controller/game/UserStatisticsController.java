@@ -1,6 +1,6 @@
 package com.alibou.security.controller.game;
 
-import com.alibou.security.auditing.ApplicationAuditAware;
+import com.alibou.security.config.auditing.ApplicationAuditAware;
 import com.alibou.security.controller.game.dto.UserStatisticsDto;
 import com.alibou.security.service.UserStatisticsService;
 import lombok.RequiredArgsConstructor;
