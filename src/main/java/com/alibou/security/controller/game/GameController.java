@@ -62,4 +62,12 @@ public class GameController {
                 .created(URI.create(gameService.choose(userChooseDto, id, userId)))
                 .build();
     }
+
+    @PostMapping("{id}/guess")
+    public ResponseEntity<Boolean> guess(@RequestBody UserChooseDto userChooseDto,
+                                         @PathVariable Integer id){
+        Integer userId = context.getCurrentAuditor().get();
+
+        return ResponseEntity.ok(gameService.guess(id,userId,userChooseDto));
+    }
 }

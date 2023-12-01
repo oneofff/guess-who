@@ -6,6 +6,7 @@ import com.alibou.security.controller.game.dto.UserChooseDto;
 import com.alibou.security.model.game.Game;
 import com.alibou.security.model.game.GameResult;
 import com.alibou.security.model.game.UserChoose;
+import com.alibou.security.model.user.User;
 import com.alibou.security.model.user.UserStatistics;
 import com.alibou.security.repository.*;
 import jakarta.transaction.Transactional;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -71,10 +73,7 @@ public class GameService {
     private GameResultResponse getGameResultResponse(Integer userId, Game game) {
         GameResult gameResult = gameResultRepository.findByGameId(game);
 
-        boolean isCreator = game.getUser1().getId().equals(userId);
-        String opponentName = isCreator ?
-                userRepository.findById(game.getUser2().getId()).get().getUsername() :
-                userRepository.findById(game.getUser1().getId()).get().getUsername();
+        String opponentName = getOpponent(userId, game).getUsername();
 
         boolean isWinner = gameResult.getWinner().getId().equals(userId);
 
@@ -83,6 +82,13 @@ public class GameService {
                 .movesToEnd(gameResult.getMovesToEnd())
                 .result(isWinner ? "WIN" : "LOSE")
                 .build();
+    }
+
+    private User getOpponent(Integer userId, Game game) {
+        boolean isCreator = game.getUser1().getId().equals(userId);
+        return isCreator ?
+                userRepository.findById(game.getUser2().getId()).get() :
+                userRepository.findById(game.getUser1().getId()).get();
     }
 
     public List<GameResultResponse> getListOfUserGames(Integer userId) {
@@ -98,17 +104,37 @@ public class GameService {
     public String choose(UserChooseDto userChooseDto, Integer gameId, Integer userId) {
         UserChoose userChoose = UserChoose.builder()
                 .user(userRepository.getReferenceById(userId))
-                .hairType(UserChoose.HairType.valueOf(userChooseDto.getHairType().toUpperCase()))
-                .hairColor(UserChoose.HairColor.valueOf(userChooseDto.getHairColor().toUpperCase()))
-                .skinColor(UserChoose.SkinColor.valueOf(userChooseDto.getSkinColor().toUpperCase()))
-                .gender(UserChoose.Gender.valueOf(userChooseDto.getGender().toUpperCase()))
-                .isWearingHat(userChooseDto.isWearingHat())
-                .hairLength(userChooseDto.getHairLength())
-                .age(userChooseDto.getAge())
-                .happiness(userChooseDto.getHappiness())
+                .hairType(UserChoose.HairType.valueOf(userChooseDto.getHairType().orElse("").toUpperCase()))
+                .hairColor(UserChoose.HairColor.valueOf(userChooseDto.getHairColor().orElse("").toUpperCase()))
+                .skinColor(UserChoose.SkinColor.valueOf(userChooseDto.getSkinColor().orElse("").toUpperCase()))
+                .gender(UserChoose.Gender.valueOf(userChooseDto.getGender().orElse("").toUpperCase()))
+                .isWearingHat(userChooseDto.getIsWearingHat().orElse(null))
+                .hairLength(userChooseDto.getHairLength().orElse(-1))
+                .age(userChooseDto.getAge().orElse(-1))
+                .happiness(userChooseDto.getHappiness().orElse(-1))
                 .game(gameRepository.getReferenceById(gameId))
                 .build();
 
         return userChooseRepository.save(userChoose).getId().toString();
     }
+
+    public Boolean guess(Integer gameId, Integer userId, UserChooseDto userChooseDto) {
+        Game game = gameRepository.findById(gameId).get();
+        User opponent = getOpponent(userId, game);
+        UserChoose opponentChoose = userChooseRepository.findByUser(opponent);
+
+        return isGuess(opponentChoose, userChooseDto);
+    }
+
+    private Boolean isGuess(UserChoose opponentChoose, UserChooseDto userChooseDto) {
+        return Objects.equals(opponentChoose.getHairType().name(), userChooseDto.getHairType().orElse("").toUpperCase()) ||
+                Objects.equals(opponentChoose.getHairColor().name(), userChooseDto.getHairColor().orElse("").toUpperCase()) ||
+                Objects.equals(opponentChoose.getSkinColor().name(), userChooseDto.getSkinColor().orElse("").toUpperCase()) ||
+                Objects.equals(opponentChoose.getGender().name(), userChooseDto.getGender().orElse("").toUpperCase()) ||
+                Objects.equals(opponentChoose.getIsWearingHat(), userChooseDto.getIsWearingHat().orElse(null)) ||
+                Objects.equals(opponentChoose.getHairLength(), userChooseDto.getHairLength().orElse(-5)) ||
+                Objects.equals(opponentChoose.getAge(), userChooseDto.getAge().orElse(-5)) ||
+                Objects.equals(opponentChoose.getHappiness(), userChooseDto.getHappiness().orElse(-5));
+    }
+
 }

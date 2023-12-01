@@ -34,7 +34,7 @@ public class UserChoose {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    private boolean isWearingHat;
+    private Boolean isWearingHat;
     private Integer hairLength;
     private Integer age;
     private Integer happiness;

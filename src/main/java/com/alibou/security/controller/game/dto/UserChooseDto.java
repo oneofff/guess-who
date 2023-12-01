@@ -3,15 +3,17 @@ package com.alibou.security.controller.game.dto;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.Optional;
+
 @Data
 @Builder
 public class UserChooseDto {
-    private String hairType;
-    private String hairColor;
-    private String skinColor; //N
-    private String gender;
-    private boolean isWearingHat;
-    private Integer hairLength;
-    private Integer age;
-    private Integer happiness;
+    private Optional<String> hairType;
+    private Optional<String> hairColor;
+    private Optional<String> skinColor; //N
+    private Optional<String> gender;
+    private Optional<Boolean> isWearingHat;
+    private Optional<Integer> hairLength;
+    private Optional<Integer> age;
+    private Optional<Integer> happiness;
 }
